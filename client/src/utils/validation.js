@@ -6,7 +6,7 @@ const validationFn = ({ name, value }) => {
 
     //password regex pattern with one special character one alphabet and one number and one capital and at least 8 characters
     case "password":
-        return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(value);
+        return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\da-zA-Z]).{8,15}$/g.test(value);
       
     default:
       return;

@@ -1,27 +1,27 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import LTForm from "../shared/LTForm";
+import { loginAction } from "../store/actions/apiAction";
 
 class Login extends Component {
   render() {
     return (
-      <LTForm btnName="Login" message="Please enter valid password" />
+      <LTForm btnName="Login" message="Please enter valid password" handleAPIFn={(params) => this.props.login(params)}
+        email={this.props?.email} />
     );
   }
 }
-
-//map state to props
+//mapStateToProps
 const mapStateToProps = (state) => {
   return {
-    user: state.user,
+    email: state.signupReducer.email,
   };
 };
-
 //map dispatch to props
 const mapDispatchToProps = (dispatch) => {
   return {
-    // login: (user) => dispatch(login(user)),
+    login: (user) => dispatch(loginAction(user)),
   };
 };
 
-export default connect(null, mapDispatchToProps)(Login);
+export default connect(mapStateToProps, mapDispatchToProps)(Login);

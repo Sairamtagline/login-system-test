@@ -20,16 +20,34 @@ class LTForm extends Component {
   }
   handleSubmit = (event) => {
     event.preventDefault();
-    const { email, password } = this.state;
+    if (this.state.isValid) {
+      const { email, password } = this.state;
+      this.props.handleAPIFn({ email, password });
+    }
   };
 
   handleChange = (event) => {
     const { name, value } = event.target;
-    this.setState({ [name]: value, error: { [name]: !validationFn({ name, value }) } });
+    this.setState({ [name]: value, error: { [name]: !validationFn({ name, value }) } }
+      , () => {
+        this.setState({ isValid: this.validateForm() })
+      }
+    );
   }
 
+  validateForm = () => {
+    const { email, password } = this.state;
+    return validationFn({ name: "email", value: email }) && validationFn({ name: "password", value: password });
+  };
+
+  componentDidUpdate(prevProps, prevState) { 
+    if (prevProps.email !== this.props.email) {
+      this.setState({ email: this.props.email })
+    } 
+  } 
+
   render() {
-    const { email, password, error } = this.state;
+    const { email, password, error, isValid } = this.state;
     return (
       <>
         <Form onSubmit={this.handleSubmit}>
@@ -42,7 +60,7 @@ class LTForm extends Component {
               value={email}
               onChange={this.handleChange}
             />
-          {error.email && <LTError message="Please enter a valid email address"/>}
+            {error.email && <LTError message="Please enter a valid email address" />}
           </Form.Group>
 
           <Form.Group className="mb-3" controlId="formBasicPassword">
@@ -54,10 +72,10 @@ class LTForm extends Component {
               value={password}
               onChange={this.handleChange}
             />
-            {error.password &&<LTError message={this.props.message}/>}
+            {error.password && <LTError message={this.props.message} />}
           </Form.Group>
           <div className="text-end">
-            <LTButton variant="primary" size="lg" type="submit" text={this.props.btnName} />
+            <LTButton variant="primary" size="lg" type="submit" text={this.props.btnName} disabled={!isValid} />
           </div>
         </Form>
       </>
